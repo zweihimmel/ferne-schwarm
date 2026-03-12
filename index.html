@@ -1,1 +1,37 @@
 <!-- language selection page or automatic redirect -->
+
+<!DOCTYPE html>
+<html lang="ja"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferne & Schwarm: works on paper 2001-2006</title>
+    <meta name="description" content="Portfolio of works on paper (2001-2006) with generative GLSL effects.">
+    
+    <script>
+        // ブラウザの言語設定を取得
+        const lang = (navigator.language || navigator.userLanguage).toLowerCase();
+
+        // 振り分けロジック
+        if (lang.startsWith('de')) {
+            window.location.replace('./de/index.html');
+        } else if (lang.startsWith('ja')) {
+            window.location.replace('./ja/index.html');
+        } else {
+            window.location.replace('./en/index.html');
+        }
+        // メモ：href ではなく replace を使うと、ブラウザの「戻る」ボタンで
+        // 再びリダイレクトの無限ループに陥るのを防げます。
+    </script>
+
+    <noscript>
+        <p>Please choose your language / 言語を選択してください:</p>
+        <ul>
+            <li><a href="./en/index.html">English</a></li>
+            <li><a href="./de/index.html">Deutsch</a></li>
+            <li><a href="./ja/index.html">日本語</a></li>
+        </ul>
+    </noscript>
+</head>
+<body>
+</body>
+</html>
