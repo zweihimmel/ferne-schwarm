@@ -1,1 +1,195 @@
-<!-- artist profile and artwork concepts -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Ferne & Schwarm</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* --- Background Content Setup --- */
+        .about-bg-content {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            background-color: white;
+        }
+
+        @media (min-width: 768px) {
+            body { height: 200vh; } 
+            .about-bg-content {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                z-index: 1;
+            }
+        }
+
+        /* --- Text Styling & Layout --- */
+        .about-container {
+            width: 100%;
+            max-width: 700px;
+            color: rgb(80, 80, 80);
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        /* Title: Ferne & Schwarm */
+        .about-container h1 { 
+            font-size: 40px; 
+            margin-bottom: 10px; 
+            color: rgb(153, 153, 153); 
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        /* Subtitle */
+        .about-container .subtitle { 
+            font-size: 18px; 
+            margin-bottom: 50px; 
+            color: #666; 
+        }
+
+        /* Heading: Exhibitions */
+        .about-container h2 { 
+            font-size: 20px; 
+            margin-top: 40px; 
+            margin-bottom: 15px; 
+            font-weight: bold; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 8px; 
+        }
+        
+        /* Exhibition List */
+        .exhibition-item { 
+            margin-bottom: 30px; 
+        }
+        .exh-date { 
+            color: #999; 
+            font-size: 15px; 
+            margin-bottom: 4px; 
+        }
+        .exh-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            display: block; 
+            line-height: 1.4;
+        }
+        .exh-location { 
+            font-size: 15px; 
+            color: #666; 
+            font-style: italic; 
+        }
+
+        /* Footer */
+        .about-footer { 
+            margin-top: 40px; 
+            padding-top: 20px;
+        }
+        .about-footer strong { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 20px;
+            color: rgb(20, 20, 20); 
+        }
+        .about-footer p {
+            font-size: 16px;
+        }
+
+        /* Mobile Tweaks */
+        @media (max-width: 767px) {
+            .about-container h1 { font-size: 26px; }
+            .about-container .subtitle { font-size: 16px; }
+            .exh-title { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="about-bg-content">
+        <main class="about-container">
+            <h1>Ferne & Schwarm</h1>
+            <p class="subtitle">Drawings and Printmaking Works from the Student Years<br>2001–2006</p>
+
+            <h2>Exhibitions</h2>
+
+            <div class="exhibition-item">
+                <p class="exh-date">2003 Sep 10 – Nov 14</p>
+                <span class="exh-title">aus dem Bleistiftgebiet II</span>
+                <span class="exh-location">Sammlung Rosskopf, Kunstraum Alexander Bürkle, Freiburg</span>
+            </div>
+
+            <div class="exhibition-item">
+                <p class="exh-date">2005 Jan 21 – Mar 5</p>
+                <span class="exh-title">Schwarzwaldblick</span>
+                <span class="exh-location">Skimuseum Hinterzarten</span>
+            </div>
+
+            <div class="exhibition-item">
+                <p class="exh-date">2006 Jan 19 – Feb 26</p>
+                <span class="exh-title">Anniversary Exhibition at Kunsthaus L6</span>
+                <span class="exh-location">Kunsthaus L6, Freiburg</span>
+            </div>
+
+            <div class="about-footer">
+                <strong>Zweihimmel</strong>
+                <p>Member of bbk berlin (Professional Association of Visual Artists Berlin)</p>
+            </div>
+        </main>
+    </div>
+
+    <div class="overlay-panel">
+        <nav class="lang-nav">
+            <span class="lang-current-label">en</span>
+            <a href="../ja/about.html">jp</a>
+            <a href="../de/about.html">de</a>
+        </nav>
+
+        <div class="panel-content">
+            <nav class="main-nav">
+                <a href="index.html">top</a>
+                <span class="nav-current-label">about</span>
+                <a href="contact.html">contact</a>
+                <a href="privacy-policy.html">privacy policy</a>
+            </nav>
+            <p class="copyright">© 2026 Ferne & Schwarm</p>
+        </div>
+    </div>
+
+    <script>
+        const panel = document.querySelector('.overlay-panel');
+
+        function handleScroll() {
+            if (window.innerWidth >= 768) {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const fullHeight = document.documentElement.scrollHeight;
+                const scrollEnd = fullHeight - windowHeight;
+                const scrollStart = scrollEnd - windowHeight;
+
+                let progress = 0;
+                if (scrollY > scrollStart) {
+                    progress = (scrollY - scrollStart) / windowHeight;
+                }
+                progress = Math.max(0, Math.min(progress, 1));
+                panel.style.transform = `translateY(${(1 - progress) * 100}%)`;
+
+                if (progress > 0.9) panel.classList.add('active');
+                else panel.classList.remove('active');
+            } else {
+                panel.style.transform = 'none';
+                panel.classList.add('active');
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleScroll);
+        window.addEventListener('load', handleScroll);
+        handleScroll();
+    </script>
+</body>
+</html>
