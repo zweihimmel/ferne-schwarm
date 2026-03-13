@@ -1,1 +1,195 @@
-<!-- privacy policy -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Ferne & Schwarm</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* --- 全体設定 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: white; font-family: Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+        /* --- 背景コンテンツ（ポリシー文章）の設定 --- */
+        .policy-bg-content {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background-color: white;
+        }
+
+        /* PC版で1画面固定にするための設定（index.htmlの挙動を再現） */
+        @media (min-width: 768px) {
+            body { height: 200vh; } 
+            .policy-bg-content {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                z-index: 1;
+            }
+        }
+
+        .policy-container {
+            width: 100%;
+            max-width: 600px;
+            color: rgb(80, 80, 80);
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .policy-container h1 { font-size: 24px; margin-bottom: 30px; color: rgb(153, 153, 153); font-weight: bold; }
+        .policy-container h2 { font-size: 16px; margin-top: 20px; margin-bottom: 8px; font-weight: bold; }
+        .policy-container p { margin-bottom: 12px; font-size: 14px; }
+        .policy-divider { border: none; border-top: 1px solid #eee; margin: 30px 0; }
+        .policy-note { font-size: 13px; color: #999; }
+
+        /* --- 曇りガラスパネル --- */
+        .overlay-panel {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background-color: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        @media (min-width: 768px) {
+            .overlay-panel {
+                position: fixed;
+                top: 0;
+                left: 0;
+                transform: translateY(100%);
+                pointer-events: none;
+            }
+            .overlay-panel.active {
+                pointer-events: auto;
+            }
+        }
+
+        /* --- 言語ナビ (右上) --- */
+        .lang-nav { position: absolute; top: 40px; right: 40px; }
+        .lang-nav a { 
+            font-weight: bold; 
+            font-size: 30px; 
+            color: blue; 
+            text-decoration: none; 
+            margin-left: 15px; 
+        }
+
+        /* 現在の言語（jp）を薄い赤色にする */
+        .lang-current-label {
+            font-weight: bold;
+            font-size: 30px;
+            color: rgba(255, 100, 100, 0.5); 
+            text-decoration: none;
+            margin-left: 15px;
+            cursor: default;
+        }
+
+        @media (min-width: 768px) { 
+            .lang-nav a, .lang-current-label { font-size: 40px; } 
+        }
+
+        /* --- メインナビ (中央メニュー) --- */
+        .main-nav { display: flex; flex-direction: column; gap: 10px; }
+        .main-nav a, .nav-current-label { 
+            font-weight: bold; 
+            font-size: 40px; 
+            text-decoration: none; 
+            line-height: 1.2; 
+        }
+
+        @media (min-width: 768px) { 
+            .main-nav a, .nav-current-label { font-size: 60px; } 
+        }
+
+        /* 通常のリンク (グレー) */
+        .main-nav a { color: rgb(153, 153, 153); }
+
+        /* 現在の項目 (リンクなし・薄赤) */
+        .nav-current-label { 
+            color: rgba(255, 100, 100, 0.5); 
+            cursor: default; 
+        }
+
+        .copyright { margin-top: 40px; color: rgb(153, 153, 153); font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="policy-bg-content">
+        <main class="policy-container">
+            <h1>プライバシーポリシー</h1>
+            <h2>管理者</h2>
+            <p>“管理者名”<br>“管理者のメアド”</p>
+            <h2>ホスティングについて</h2>
+            <p>当サイトはGitHub Pages（米国GitHub Inc.）でホスティングされています。訪問時、IPアドレス等の情報が技術的運用のために一時的に記録されることがあります。</p>
+            <h2>クッキーについて</h2>
+            <p>当サイトは分析ツール・広告等の非必須クッキーを使用していません。</p>
+            <h2>あなたの権利</h2>
+            <p>GDPRに基づき、開示・訂正・削除等の権利があります。ご連絡は上記メールアドレスまで。</p>
+            <hr class="policy-divider">
+            <p class="policy-note">【参考】当サイトは作品紹介を目的としており、個人情報を積極的に収集・利用することはありません</p>
+        </main>
+    </div>
+
+    <div class="overlay-panel">
+        <nav class="lang-nav">
+            <a href="../en/privacy-policy.html">en</a>
+            <span class="lang-current-label">jp</span>
+            <a href="../de/privacy-policy.html">de</a>
+        </nav>
+
+        <div class="panel-content">
+            <nav class="main-nav">
+                <a href="index.html">top</a>
+                <a href="about.html">about</a>
+                <a href="contact.html">contact</a>
+                <span class="nav-current-label">privacy policy</span>
+            </nav>
+            <p class="copyright">© 2026 Ferne & Schwarm</p>
+        </div>
+    </div>
+
+    <script>
+        const panel = document.querySelector('.overlay-panel');
+
+        function handleScroll() {
+            if (window.innerWidth >= 768) {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const fullHeight = document.documentElement.scrollHeight;
+                const scrollEnd = fullHeight - windowHeight;
+                const scrollStart = scrollEnd - windowHeight;
+
+                let progress = 0;
+                if (scrollY > scrollStart) {
+                    progress = (scrollY - scrollStart) / windowHeight;
+                }
+                progress = Math.max(0, Math.min(progress, 1));
+                panel.style.transform = `translateY(${(1 - progress) * 100}%)`;
+
+                if (progress > 0.9) panel.classList.add('active');
+                else panel.classList.remove('active');
+            } else {
+                panel.style.transform = 'none';
+                panel.classList.add('active');
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleScroll);
+        window.addEventListener('load', handleScroll);
+        handleScroll();
+    </script>
+</body>
+</html>
