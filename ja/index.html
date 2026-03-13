@@ -28,21 +28,32 @@
     <div class="overlay-panel">
         <nav class="lang-nav">
             <a href="../en/index.html">en</a>
-            <a href="../ja/index.html">jp</a>
+            <span class="lang-current-label">jp</span>
             <a href="../de/index.html">de</a>
         </nav>
 
         <div class="panel-content">
             <nav class="main-nav">
+                <span class="nav-current-label">top</span>
                 <a href="about.html">about</a>
                 <a href="contact.html">contact</a>
-                <a href="privacy_policy.html">privacy policy</a>
+                <a href="privacy-policy.html">privacy policy</a>
             </nav>
             <p class="copyright">© 2026 Ferne & Schwarm</p>
         </div>
     </div>
 
     <script>
+        // --- イントロ制御ロジック ---
+        const intro = document.getElementById('intro-screen');
+        const referrer = document.referrer;
+        const isInternalNav = referrer.includes('/ja/') || referrer.includes('/en/') || referrer.includes('/de/');
+
+        if (isInternalNav) {
+            intro.style.display = 'none';
+        }
+
+        // --- パネルのスクロール制御 ---
         const panel = document.querySelector('.overlay-panel');
 
         function handleScroll() {
@@ -50,26 +61,18 @@
                 const scrollY = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const fullHeight = document.documentElement.scrollHeight;
-
                 const scrollEnd = fullHeight - windowHeight;
                 const scrollStart = scrollEnd - windowHeight;
 
                 let progress = 0;
                 if (scrollY > scrollStart) {
                     progress = (scrollY - scrollStart) / windowHeight;
-                } else {
-                    progress = 0;
                 }
-
                 progress = Math.max(0, Math.min(progress, 1));
-                const translateY = (1 - progress) * 100;
-                panel.style.transform = `translateY(${translateY}%)`;
+                panel.style.transform = `translateY(${(1 - progress) * 100}%)`;
 
-                if (progress > 0.9) {
-                    panel.classList.add('active');
-                } else {
-                    panel.classList.remove('active');
-                }
+                if (progress > 0.9) panel.classList.add('active');
+                else panel.classList.remove('active');
             } else {
                 panel.style.transform = 'none';
                 panel.classList.add('active');
