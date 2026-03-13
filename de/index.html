@@ -1,1 +1,85 @@
-<!-- landing page with artwork thumbnails and links to about, contact, and privacy policy -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferne & Schwarm: Works on Paper 2001-2006</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <div id="intro-screen">
+        <h1 class="intro-title">
+            Ferne & Schwarm:<br>
+            Works on Paper<br><br>
+            2001-2006
+        </h1>
+    </div>
+
+    <main class="gallery">
+        <div class="artwork-item"><a href="artworks/artwork01.html"><img src="../images/thumbs/artwork01.avif" alt="Artwork 01"></a></div>
+        <div class="artwork-item"><a href="artworks/artwork02.html"><img src="../images/thumbs/artwork02.avif" alt="Artwork 02"></a></div>
+        <div class="artwork-item"><a href="artworks/artwork03.html"><img src="../images/thumbs/artwork03.avif" alt="Artwork 03"></a></div>
+        <div class="artwork-item"><a href="artworks/artwork04.html"><img src="../images/thumbs/artwork04.avif" alt="Artwork 04"></a></div>
+        <div class="artwork-item"><a href="artworks/artwork05.html"><img src="../images/thumbs/artwork05.avif" alt="Artwork 05"></a></div>
+        <div class="artwork-item"><a href="artworks/artwork06.html"><img src="../images/thumbs/artwork06.avif" alt="Artwork 06"></a></div>
+    </main>
+
+    <div class="overlay-panel">
+        <nav class="lang-nav">
+            <a href="../en/index.html">en</a>
+            <a href="../ja/index.html">jp</a>
+            <a href="../de/index.html">de</a>
+        </nav>
+
+        <div class="panel-content">
+            <nav class="main-nav">
+                <a href="about.html">about</a>
+                <a href="contact.html">contact</a>
+                <a href="privacy_policy.html">privacy policy</a>
+            </nav>
+            <p class="copyright">© 2026 Ferne & Schwarm</p>
+        </div>
+    </div>
+
+    <script>
+        const panel = document.querySelector('.overlay-panel');
+
+        function handleScroll() {
+            if (window.innerWidth >= 768) {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const fullHeight = document.documentElement.scrollHeight;
+
+                const scrollEnd = fullHeight - windowHeight;
+                const scrollStart = scrollEnd - windowHeight;
+
+                let progress = 0;
+                if (scrollY > scrollStart) {
+                    progress = (scrollY - scrollStart) / windowHeight;
+                } else {
+                    progress = 0;
+                }
+
+                progress = Math.max(0, Math.min(progress, 1));
+                const translateY = (1 - progress) * 100;
+                panel.style.transform = `translateY(${translateY}%)`;
+
+                if (progress > 0.9) {
+                    panel.classList.add('active');
+                } else {
+                    panel.classList.remove('active');
+                }
+            } else {
+                panel.style.transform = 'none';
+                panel.classList.add('active');
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleScroll);
+        window.addEventListener('load', handleScroll);
+        handleScroll();
+    </script>
+</body>
+</html>
