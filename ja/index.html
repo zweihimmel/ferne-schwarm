@@ -45,13 +45,25 @@
 
     <script>
         // --- イントロ制御ロジック ---
-        const intro = document.getElementById('intro-screen');
-        const referrer = document.referrer;
-        const isInternalNav = referrer.includes('/ja/') || referrer.includes('/en/') || referrer.includes('/de/');
+        document.addEventListener('DOMContentLoaded', () => {
+    const intro = document.getElementById('intro-screen');
+    
+    // 1. セッションに「見たよ」という記録があるか確認
+    const hasSeenIntro = sessionStorage.getItem('visited');
 
-        if (isInternalNav) {
+    if (hasSeenIntro) {
+        // 2. すでに見ている場合は、イントロ画面を即座に消す
+        if (intro) {
             intro.style.display = 'none';
         }
+    } else {
+        // 3. 初めて来た場合は、通常通り表示して記録を残す
+        sessionStorage.setItem('visited', 'true');
+        
+        // （既存のフェードアウト処理などがここに入る）
+        // 例: setTimeout(() => { intro.style.display = 'none'; }, 4000);
+    }
+});
 
         // --- パネルのスクロール制御 ---
         const panel = document.querySelector('.overlay-panel');
