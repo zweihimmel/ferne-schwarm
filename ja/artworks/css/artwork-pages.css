@@ -1,0 +1,70 @@
+/* artworks/css/artwork-pages.css */
+
+/* 共通のレイアウト */
+body { 
+    background-color: #fff; 
+    margin: 0; 
+    height: 200vh; 
+    overflow-x: hidden; 
+}
+
+/* 曇りガラスパネル内の文字レイアウト（ここをいじれば全ページ変わる！） */
+.artwork-info { 
+    text-align: center; 
+    color: #100f0ff0; 
+    font-family: Arial, sans-serif; 
+    padding: 20px; /* 余白の調整 */
+}
+
+.artwork-title { 
+    font-size: 5cqmax; /* 少し小さく調整してみる例 */
+    font-weight: bold; 
+    margin-bottom: 24px; 
+    color: #000; 
+    letter-spacing: 0.08em; 
+    line-height: 1.1;
+}
+
+.artwork-tech { 
+    font-size: 30px; 
+    margin-bottom: 20px; 
+    color: #333;
+}
+
+.artwork-credit { 
+    font-size: 15px; 
+    margin-bottom: 50px; 
+    opacity: 0.8;
+}
+
+.artwork-top-link { 
+    font-size: 16px; 
+    color: blue; 
+    text-decoration: none; 
+    border: 1px solid blue; /* ボタンっぽくしてみる例 */
+    padding: 8px 24px;
+}
+
+/* レスポンシブ（スマホ） */
+@media (max-width: 767px) {
+    .artwork-title { 
+        font-size: 36px; 
+        margin-bottom: 16px;
+    }
+    .artwork-tech {
+        font-size: 16px;
+    }
+    .artwork-credit { 
+    font-size: 20px; 
+    margin-bottom: 50px; 
+    opacity: 0.8;
+}
+
+.artwork-top-link { 
+    font-size: 12px; 
+    color: blue; 
+    text-decoration: none; 
+    border: 1px solid blue; /* ボタンっぽくしてみる例 */
+    padding: 8px 24px;
+}
+}
