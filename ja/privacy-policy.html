@@ -42,86 +42,13 @@
             text-align: left;
         }
 
-        .policy-container h1 { font-size: 24px; margin-bottom: 30px; color: rgb(153, 153, 153); font-weight: bold; }
+        .policy-container h1 { font-size: 33px; margin-bottom: 30px; color: rgb(153, 153, 153); font-weight: bold; }
         .policy-container h2 { font-size: 16px; margin-top: 20px; margin-bottom: 8px; font-weight: bold; }
         .policy-container p { margin-bottom: 12px; font-size: 14px; }
         .policy-divider { border: none; border-top: 1px solid #eee; margin: 30px 0; }
         .policy-note { font-size: 13px; color: #999; }
 
-        /* --- 曇りガラスパネル --- */
-        .overlay-panel {
-            position: relative;
-            width: 100%;
-            min-height: 100vh;
-            background-color: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        @media (min-width: 768px) {
-            .overlay-panel {
-                position: fixed;
-                top: 0;
-                left: 0;
-                transform: translateY(100%);
-                pointer-events: none;
-            }
-            .overlay-panel.active {
-                pointer-events: auto;
-            }
-        }
-
-        /* --- 言語ナビ (右上) --- */
-        .lang-nav { position: absolute; top: 40px; right: 40px; }
-        .lang-nav a { 
-            font-weight: bold; 
-            font-size: 30px; 
-            color: blue; 
-            text-decoration: none; 
-            margin-left: 15px; 
-        }
-
-        /* 現在の言語（jp）を薄い赤色にする */
-        .lang-current-label {
-            font-weight: bold;
-            font-size: 30px;
-            color: rgba(255, 100, 100, 0.5); 
-            text-decoration: none;
-            margin-left: 15px;
-            cursor: default;
-        }
-
-        @media (min-width: 768px) { 
-            .lang-nav a, .lang-current-label { font-size: 40px; } 
-        }
-
-        /* --- メインナビ (中央メニュー) --- */
-        .main-nav { display: flex; flex-direction: column; gap: 10px; }
-        .main-nav a, .nav-current-label { 
-            font-weight: bold; 
-            font-size: 40px; 
-            text-decoration: none; 
-            line-height: 1.2; 
-        }
-
-        @media (min-width: 768px) { 
-            .main-nav a, .nav-current-label { font-size: 60px; } 
-        }
-
-        /* 通常のリンク (グレー) */
-        .main-nav a { color: rgb(153, 153, 153); }
-
-        /* 現在の項目 (リンクなし・薄赤) */
-        .nav-current-label { 
-            color: rgba(255, 100, 100, 0.5); 
-            cursor: default; 
-        }
-
-        .copyright { margin-top: 40px; color: rgb(153, 153, 153); font-size: 14px; }
+        /* --- 曇りガラスパネル以降のスタイル指定を style.css 参照のため削除 --- */
     </style>
 </head>
 <body>
@@ -130,8 +57,7 @@
         <main class="policy-container">
             <h1>プライバシーポリシー</h1>
             <h2>管理者</h2>
-            <p>“管理者名”<br>“管理者のメアド”</p>
-            <h2>ホスティングについて</h2>
+            <p>Hiroto Aso<br><span id="email-address"></span></p> <h2>ホスティングについて</h2>
             <p>当サイトはGitHub Pages（米国GitHub Inc.）でホスティングされています。訪問時、IPアドレス等の情報が技術的運用のために一時的に記録されることがあります。</p>
             <h2>クッキーについて</h2>
             <p>当サイトは分析ツール・広告等の非必須クッキーを使用していません。</p>
@@ -190,6 +116,12 @@
         window.addEventListener('resize', handleScroll);
         window.addEventListener('load', handleScroll);
         handleScroll();
+
+        /* --- メールアドレスの難読化設定 --- */
+        const u = "haso";     // アットマークより前
+        const d = "ymail.ne.jp";   // ドメイン
+        const addr = u + "@" + d;
+        document.getElementById('email-address').textContent = addr;
     </script>
 </body>
 </html>

@@ -41,51 +41,11 @@
             text-align: left;
         }
 
-        .policy-container h1 { font-size: 24px; margin-bottom: 30px; color: rgb(153, 153, 153); font-weight: bold; }
+        .policy-container h1 { font-size: 30px; margin-bottom: 30px; color: rgb(153, 153, 153); font-weight: bold; }
         .policy-container h2 { font-size: 16px; margin-top: 20px; margin-bottom: 8px; font-weight: bold; }
         .policy-container p { margin-bottom: 12px; font-size: 14px; }
 
-        /* --- Milchglaseffekt-Panel --- */
-        .overlay-panel {
-            position: relative;
-            width: 100%;
-            min-height: 100vh;
-            background-color: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 100;
-        }
-
-        @media (min-width: 768px) {
-            .overlay-panel { position: fixed; top: 0; left: 0; transform: translateY(100%); pointer-events: none; }
-            .overlay-panel.active { pointer-events: auto; }
-        }
-
-        /* --- Sprachnavigation (Oben Rechts) --- */
-        .lang-nav { position: absolute; top: 40px; right: 40px; }
-        .lang-nav a { font-weight: bold; font-size: 30px; color: blue; text-decoration: none; margin-left: 15px; }
-
-        /* Aktuelle Sprache (de) in blassrot */
-        .lang-current-label {
-            font-weight: bold; font-size: 30px;
-            color: rgba(255, 100, 100, 0.5);
-            text-decoration: none; margin-left: 15px; cursor: default;
-        }
-
-        @media (min-width: 768px) { .lang-nav a, .lang-current-label { font-size: 40px; } }
-
-        /* --- Hauptnavigation (Zentrales Menü) --- */
-        .main-nav { display: flex; flex-direction: column; gap: 10px; }
-        .main-nav a, .nav-current-label { font-weight: bold; font-size: 40px; text-decoration: none; line-height: 1.2; }
-        @media (min-width: 768px) { .main-nav a, .nav-current-label { font-size: 60px; } }
-
-        .main-nav a { color: rgb(153, 153, 153); }
-
-        /* Aktueller Menüpunkt (Privacy Policy) in blassrot */
-        .nav-current-label { color: rgba(255, 100, 100, 0.5); cursor: default; }
-
-        .copyright { margin-top: 40px; color: rgb(153, 153, 153); font-size: 14px; }
+        /* --- スタイル指定を style.css 参照のため削除 --- */
     </style>
 </head>
 <body>
@@ -94,8 +54,7 @@
         <main class="policy-container">
             <h1>Datenschutzerklärung</h1>
             <h2>Verantwortlicher</h2>
-            <p>“Name”<br>“e-mailadresse”</p>
-            <h2>Hosting</h2>
+            <p>Hiroto Aso<br><span id="email-address"></span></p> <h2>Hosting</h2>
             <p>Diese Website wird auf GitHub Pages (GitHub Inc., USA) gehostet. Beim Besuch werden Daten wie IP-Adresse temporär in Server-Logs gespeichert (ca. 14 Tage) – erforderlich für den technischen Betrieb.</p>
             <h2>Cookies</h2>
             <p>Es werden keine nicht notwendigen Cookies, Analysetools oder Tracker verwendet.</p>
@@ -152,6 +111,12 @@
         window.addEventListener('resize', handleScroll);
         window.addEventListener('load', handleScroll);
         handleScroll();
+
+        /* --- E-Mail-Verschleierung --- */
+        const u = "haso";     // Benutzername
+        const d = "ymail.ne.jp";   // Domain
+        const addr = u + "@" + d;
+        document.getElementById('email-address').textContent = addr;
     </script>
 </body>
 </html>
