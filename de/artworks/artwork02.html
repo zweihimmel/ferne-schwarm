@@ -1,1 +1,182 @@
-<!-- artwork image with GLSL effect -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Ernte des Blicks</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="./css/artwork-pages.css">
+    
+    <style>
+        .artwork-bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 1; background-color: #fff;
+        }
+        #artwork-media { 
+            position: relative;
+            width: 100%; height: 100vh; display: block; cursor: pointer; 
+            object-fit: contain;
+            z-index: 3; /* Vor dem Canvas platziert */
+        }
+        #gl-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 2; pointer-events: none; opacity: 0;
+        }
+        @media (max-width: 767px) {
+            #artwork-media { object-fit: cover; }
+            .overlay-panel { transform: none; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="artwork-bg-container">
+        <img src="../../images/full/artwork02.avif" id="artwork-media" alt="Artwork 02">
+        <canvas id="gl-canvas"></canvas>
+    </div>
+
+    <div class="overlay-panel">
+        <nav class="lang-nav">
+            <a href="../../en/artworks/artwork02.html">en</a>
+            <a href="../../ja/artworks/artwork02.html">jp</a>
+            <span class="lang-current-label">de</span>
+        </nav>
+        <div class="panel-content">
+            <div class="artwork-info">
+                <h2 class="artwork-title">Die Ernte des Blicks</h2>
+                <p class="artwork-tech">29,7 × 42,0 cm, Filzstift auf Papier</p>
+                <p class="artwork-credit">© 2026 Ferne & Schwarm</p>
+                <div><a href="../index.html" class="artwork-top-link">Top</a></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from '../../js/three.module.js';
+
+        const panel = document.querySelector('.overlay-panel');
+        const media = document.getElementById('artwork-media');
+        const canvas = document.getElementById('gl-canvas');
+
+        const isMobile = window.innerWidth < 768;
+        const mobileSrc = "../../images/full/artwork02_mobile.avif";
+        const pcSrc = "../../images/full/artwork02.avif";
+        const effectSrc = isMobile ? mobileSrc : "../../images/thumb/artwork02.avif";
+
+        if (isMobile) {
+            media.src = mobileSrc;
+        } else {
+            media.src = pcSrc;
+        }
+
+        let scene, camera, renderer, material, texture, startTime;
+        let isAnimating = false;
+        let isReady = false;
+
+        function handleScroll() {
+            if (window.innerWidth >= 768) {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const scrollHeight = document.documentElement.scrollHeight;
+                const scrollStart = (scrollHeight - windowHeight) - windowHeight;
+                let progress = Math.max(0, Math.min((scrollY - scrollStart) / windowHeight, 1));
+                panel.style.transform = `translateY(${(1 - progress) * 100}%)`;
+                if (progress > 0.01) panel.classList.add('active');
+                else panel.classList.remove('active');
+            } else {
+                panel.classList.add('active');
+            }
+        }
+        window.addEventListener('scroll', handleScroll);
+
+        async function initShader(imagePath) {
+            if (isReady) return; 
+            return new Promise((resolve) => {
+                const loader = new THREE.TextureLoader();
+                loader.load(imagePath, async (loadedTexture) => {
+                    texture = loadedTexture;
+                    texture.flipY = false;
+
+                    const resp = await fetch('../../shaders/artwork_02_falling.frag');
+                    const frag = await resp.text();
+
+                    scene = new THREE.Scene();
+                    camera = new THREE.Camera();
+                    renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false });
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                    const imageAspect = texture.image.width / texture.image.height;
+                    const screenAspect = window.innerWidth / window.innerHeight;
+                    let planeW, planeH;
+
+                    if (isMobile) {
+                        planeW = 2.0; planeH = 2.0;
+                    } else {
+                        if (imageAspect > screenAspect) {
+                            planeW = 2.0; planeH = 2.0 * (screenAspect / imageAspect);
+                        } else {
+                            planeW = 2.0 * (imageAspect / screenAspect); planeH = 2.0;
+                        }
+                    }
+
+                    material = new THREE.ShaderMaterial({
+                        uniforms: {
+                            u_texture: { value: texture },
+                            u_time: { value: 0.0 },
+                            u_isFalling: { value: true },
+                            u_resolution: { 
+                                value: new THREE.Vector2(
+                                    window.innerWidth * (isMobile ? 1.0 : planeW / 2.0),
+                                    window.innerHeight * (isMobile ? 1.0 : planeH / 2.0)
+                                ) 
+                            },
+                            u_density: { value: 0.8 }
+                        },
+                        vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }`,
+                        fragmentShader: frag,
+                        transparent: true
+                    });
+
+                    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(planeW, planeH), material));
+                    isReady = true;
+                    resolve();
+                }, undefined, (err) => {
+                    initShader(pcSrc);
+                });
+            });
+        }
+
+        function render() {
+            if (!isAnimating) return;
+            material.uniforms.u_time.value = (Date.now() - startTime) * 0.001;
+            renderer.render(scene, camera);
+            requestAnimationFrame(render);
+        }
+
+        media.addEventListener('click', async () => {
+            if (isAnimating || (panel.classList.contains('active') && !isMobile)) return;
+            if (!isReady) await initShader(effectSrc);
+
+            isAnimating = true;
+            startTime = Date.now();
+            canvas.style.opacity = "1";
+            media.style.visibility = "hidden";
+            render();
+
+            setTimeout(() => {
+                if (texture) texture.dispose();
+                if (material) material.dispose();
+                if (renderer) renderer.dispose();
+                window.location.href = "artwork03.html"; 
+            }, 1800);
+        });
+
+        media.addEventListener('load', () => {
+            initShader(effectSrc);
+        });
+        handleScroll();
+
+    </script>
+</body>
+</html>
