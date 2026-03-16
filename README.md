@@ -43,13 +43,13 @@ combined with real-time GLSL effects.
   - **Mobile:** Full-screen display leveraging portrait orientation. Abstract works are adapted through vertical placement.
 
 ### Shader Integration (GLSL)
-- **JP:** - AI（v0/Cursor）との共創により、数理的なエフェクト（粒子化、透過）を作品ごとにカスタマイズ。
+- **JP:** - AI（Gemini/Claude）との共創により、数理的なエフェクト（粒子化、透過）を作品ごとにカスタマイズ。
   - GLSL（GPU向け言語）を扱う際、低レイヤーの視点（基本情報・アセンブラ）によって計算効率やメモリを意識した抽象思考が可能。
 - **DE:**
-  - In Co-Creation mit KI (v0/Cursor) wurden mathematische Effekte (Partikelbildung, Transparenz) für jedes Werk individuell angepasst.
+  - In Co-Creation mit KI （Gemini/Claude） wurden mathematische Effekte (Partikelbildung, Transparenz) für jedes Werk individuell angepasst.
   - Beim Umgang mit GLSL ermöglicht meine Low-Level-Perspektive (Assembler-Kenntnisse) ein abstraktes Denken, das Recheneffizienz und Speichermanagement berücksichtigt.
 - **EN:**
-  - In co-creation with AI (v0/Cursor), mathematical effects such as unitization (particles) and transparency are customized for each work.
+  - In co-creation with AI （Gemini/Claude） mathematical effects such as unitization (particles) and transparency are customized for each work.
   - When working with GLSL, my low-level perspective (rooted in Assembler experience) enables abstract thinking that prioritizes computational efficiency and memory management.
 
 ## Tech Stack  
@@ -64,7 +64,6 @@ ChatGPT
 DeepSeek  
 Gemini  
 Claude  
-Cursor
 
 ---
 
