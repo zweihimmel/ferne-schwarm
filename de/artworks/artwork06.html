@@ -1,1 +1,244 @@
-<!-- artwork image with GLSL effect -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schwarzwald, Colmar</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="./css/artwork-pages.css">
+    
+    <style>
+        /* --- Gesamtlayout --- Partikelanzahl Zeile 155, Partikelgröße Zeile 193 --- */ 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: white; font-family: Arial, sans-serif; overflow-x: hidden; }
+
+        /* PC-Version: Scrollbereich zur Panel-Aktivierung */
+        @media (min-width: 768px) { body { height: 200vh; } }
+
+        .artwork-bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 1; background-color: #fff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        #media-wrapper {
+            position: relative; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; 
+            cursor: pointer; z-index: 3;
+        }
+
+        .artwork-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+        #gl-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: 2; pointer-events: none; opacity: 0;
+        }
+
+        /* Mobile Version: Bilder untereinander stapeln */
+        @media (max-width: 767px) {
+            .artwork-bg-container { position: relative; height: auto; }
+            #media-wrapper { height: auto; cursor: pointer; }
+            .artwork-img { height: auto; object-fit: contain; width: 100%; }
+            #gl-canvas { display: none; }
+            .overlay-panel { position: relative; transform: none; min-height: 100vh; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="artwork-bg-container">
+        <div id="media-wrapper"></div>
+        <canvas id="gl-canvas"></canvas>
+    </div>
+
+    <div class="overlay-panel">
+        <nav class="lang-nav">
+            <a href="../../en/artworks/artwork06.html">en</a>
+            <a href="../../ja/artworks/artwork06.html">jp</a>
+            <span class="lang-current-label">de</span>
+        </nav>
+        <div class="panel-content">
+            <div class="artwork-info">
+                <h2 class="artwork-title">Schwarzwald<br>Colmar</h2>
+                <p class="artwork-tech">
+                    59,4 × 42,0 cm, Kugelschreiber und Bleistift auf Papier<br>
+                    42,0 × 29,7 cm, Kugelschreiber auf Papier
+                </p>
+                <p class="artwork-credit">© 2026 Ferne & Schwarm</p>
+                <div><a href="../index.html" class="artwork-top-link">Top</a></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from '../../js/three.module.js';
+
+        const wrapper = document.getElementById('media-wrapper');
+        const canvas = document.getElementById('gl-canvas');
+        const panel = document.querySelector('.overlay-panel');
+        const isMobile = window.innerWidth < 768;
+
+        // --- Bildpfade ---
+        const pcSrc = "../../images/full/artwork06.avif";
+        const mbSrc1 = "../../images/full/artwork11.avif"; 
+        const mbSrc2 = "../../images/full/artwork12.avif"; 
+        const nextUrl = "../about.html";
+        const shaderPath = "../../shaders/artwork_06.frag";
+
+        // --- Bilddarstellung ---
+        if (!isMobile) {
+            const img = document.createElement('img');
+            img.src = pcSrc;
+            img.className = 'artwork-img';
+            wrapper.appendChild(img);
+        } else {
+            [mbSrc1, mbSrc2].forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'artwork-img';
+                wrapper.appendChild(img);
+            });
+        }
+
+        // --- Mobil: Whiteout-Effekt ---
+        if (isMobile) {
+            const fadeOverlay = document.createElement('div');
+            fadeOverlay.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: white; opacity: 0; pointer-events: none;
+                transition: opacity 1.2s ease-in-out; z-index: 9999;
+            `;
+            document.body.appendChild(fadeOverlay);
+
+            wrapper.addEventListener('click', () => {
+                fadeOverlay.style.opacity = "1";
+                setTimeout(() => { window.location.href = nextUrl; }, 1600);
+            });
+        }
+
+        // --- Nur PC: Scroll-Panel-Steuerung ---
+        function handleScroll() {
+            if (window.innerWidth >= 768) {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const scrollStart = document.documentElement.scrollHeight - (windowHeight * 2);
+                let progress = Math.max(0, Math.min((scrollY - scrollStart) / windowHeight, 1));
+                panel.style.transform = `translateY(${(1 - progress) * 100}%)`;
+                if (progress > 0.01) panel.classList.add('active');
+                else panel.classList.remove('active');
+            }
+        }
+        window.addEventListener('scroll', handleScroll);
+
+        // --- Nur PC: GLSL-Effekt ---
+        let scene, camera, renderer, material, texture, startTime;
+        let isAnimating = false;
+        let isReady = false;
+
+        const DURATION = 2200;
+
+        async function initShader() {
+            if (isMobile || isReady) return;
+            
+            const loader = new THREE.TextureLoader();
+            return new Promise((resolve) => {
+                loader.load(pcSrc, async (loadedTexture) => {
+                    texture = loadedTexture;
+                    const resp = await fetch(shaderPath);
+                    const frag = await resp.text();
+
+                    scene = new THREE.Scene();
+                    camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 10);
+                    camera.position.z = 1;
+                    renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false });
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                    const GRID = 300;
+                    const geo = new THREE.BufferGeometry();
+                    const pos = [], uv = [];
+                    for (let y = 0; y < GRID; y++) {
+                        for (let x = 0; x < GRID; x++) {
+                            pos.push((x / GRID) * 2 - 1, (y / GRID) * 2 - 1, 0);
+                            uv.push(x / GRID, y / GRID);
+                        }
+                    }
+                    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+                    geo.setAttribute('uv',       new THREE.Float32BufferAttribute(uv,  2));
+
+                    const imgAspect    = loadedTexture.image.width / loadedTexture.image.height;
+                    const screenAspect = window.innerWidth / window.innerHeight;
+
+                    material = new THREE.ShaderMaterial({
+                        uniforms: {
+                            u_texture: { value: texture },
+                            u_time:    { value: 0.0 },
+                            u_fade:    { value: 1.0 },
+                            u_aspect:  { value: screenAspect / imgAspect },
+                        },
+                        vertexShader: `
+                            precision highp float;
+                            uniform float u_time;
+                            uniform float u_aspect;
+                            varying vec2 vUv;
+                            float rand(vec2 co) {
+                                return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+                            }
+                            void main() {
+                                vUv = uv;
+                                vec3 p = position;
+                                float a = rand(uv);
+                                float angle = sin(u_time * 0.6 + a * 20.0);
+                                p.x += cos(angle) * u_time * 0.06;
+                                p.y += sin(angle) * u_time * 0.06;
+                                p.x /= u_aspect;
+                                gl_PointSize = 4.6;
+                                gl_Position = vec4(p, 1.0);
+                            }
+                        `,
+                        fragmentShader: frag,
+                        transparent: true,
+                        depthWrite: false
+                    });
+
+                    scene.add(new THREE.Points(geo, material));
+                    isReady = true;
+                    resolve();
+                });
+            });
+        }
+
+        function render() {
+            if (!isAnimating) return;
+            const t = Math.min((Date.now() - startTime) / DURATION, 1.0);
+            material.uniforms.u_time.value = t * 1.0;
+            material.uniforms.u_fade.value = 1.0 - t;
+            renderer.render(scene, camera);
+
+            if (t < 1.0) {
+                requestAnimationFrame(render);
+            } else {
+                window.location.href = nextUrl;
+            }
+        }
+
+        if (!isMobile) {
+            wrapper.addEventListener('click', async () => {
+                if (isAnimating || panel.classList.contains('active')) return;
+                if (!isReady) await initShader();
+
+                isAnimating = true;
+                startTime = Date.now();
+                canvas.style.opacity = "1";
+                wrapper.style.visibility = "hidden";
+                render();
+            });
+
+            window.addEventListener('load', () => {
+                initShader();
+                handleScroll();
+            });
+        }
+    </script>
+</body>
+</html>
