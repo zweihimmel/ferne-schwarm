@@ -1,0 +1,70 @@
+/* artworks/css/artwork-pages.css */
+
+/* General Layout Settings */
+body { 
+    background-color: #fff; 
+    margin: 0; 
+    height: 200vh; 
+    overflow-x: hidden; 
+}
+
+/* Typography Layout within the Frosted Glass Panel (Global settings for all artwork pages) */
+.artwork-info { 
+    text-align: center; 
+    color: #100f0ff0; 
+    font-family: Arial, sans-serif; 
+    padding: 20px; /* Adjusting the inner spacing */
+}
+
+.artwork-title { 
+    font-size: 5cqmax; /* Example: scaling down the font size slightly */
+    font-weight: bold; 
+    margin-bottom: 24px; 
+    color: #000; 
+    letter-spacing: 0.08em; 
+    line-height: 1.1;
+}
+
+.artwork-tech { 
+    font-size: 30px; 
+    margin-bottom: 20px; 
+    color: #333;
+}
+
+.artwork-credit { 
+    font-size: 15px; 
+    margin-bottom: 50px; 
+    opacity: 0.8;
+}
+
+.artwork-top-link { 
+    font-size: 16px; 
+    color: blue; 
+    text-decoration: none; 
+    border: 1px solid blue; /* Example: styling the link as a button */
+    padding: 8px 24px;
+}
+
+/* Responsive Styles (Mobile Devices) */
+@media (max-width: 767px) {
+    .artwork-title { 
+        font-size: 36px; 
+        margin-bottom: 16px;
+    }
+    .artwork-tech {
+        font-size: 16px;
+    }
+    .artwork-credit { 
+        font-size: 20px; 
+        margin-bottom: 50px; 
+        opacity: 0.8;
+    }
+
+    .artwork-top-link { 
+        font-size: 12px; 
+        color: blue; 
+        text-decoration: none; 
+        border: 1px solid blue; /* Example: styling the link as a button */
+        padding: 8px 24px;
+    }
+}
