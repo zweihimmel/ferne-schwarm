@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./css/artwork-pages.css">
     
     <style>
-        /* --- 全体レイアウト --- 粒子数163行目 粒子の大きさ201行目 144行目時間　*/ 
+        /* --- 全体レイアウト --- 時間:144行目、粒子数:163行目 粒子の大きさ:213行目 */ 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: white; font-family: Arial, sans-serif; overflow-x: hidden; }
 
@@ -118,7 +118,7 @@ if (isMobile) {
         
         setTimeout(() => { 
             window.location.href = nextUrl; 
-        }, 1500);
+        }, 1800);
     });
 }
 
@@ -141,7 +141,7 @@ if (isMobile) {
         let isAnimating = false;
         let isReady = false;
 
-        const DURATION = 2200;
+        const DURATION = 2400;
 
         async function initShader() {
             if (isMobile || isReady) return;
@@ -195,10 +195,22 @@ camera.position.z = 1;
                                 vec3 p = position;
                                 float a = rand(uv);
                                 float angle = sin(u_time * 0.6 + a * 20.0);
-                                p.x += cos(angle) * u_time * 0.06;
-                                p.y += sin(angle) * u_time * 0.06;
+
+                                // ▼ 追加（寿命）
+                                float delay = a * 0.5;
+                                float t2 = clamp(u_time - delay, 0.0, 1.0);
+                                float life = 1.0 - t2;
+
+                                // ▼ 動きにlifeを反映
+                                float strength = life * life;
+
+                                p.x += cos(angle) * strength * 0.06;
+                                p.y += sin(angle) * strength * 0.06;
+
                                 p.x /= u_aspect;
-                                gl_PointSize = 5.6;
+
+                                // ▼ サイズも減衰
+                                gl_PointSize = 5.6 * life;
                                 gl_Position = vec4(p, 1.0);
                             }
                         `,
@@ -221,11 +233,13 @@ camera.position.z = 1;
             material.uniforms.u_fade.value = 1.0 - t;
             renderer.render(scene, camera);
 
-            if (t < 1.0) {
-                requestAnimationFrame(render);
-            } else {
-                window.location.href = nextUrl;
-            }
+   if (t < 1.0) {
+    requestAnimationFrame(render);
+} else {
+    setTimeout(() => {
+        window.location.href = nextUrl;
+    }, 100);
+}
         }
 
         if (!isMobile) {

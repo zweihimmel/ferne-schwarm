@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./css/artwork-pages.css">
     
     <style>
-        /* --- General Layout --- Particles: line 155, Size: line 187 --- */ 
+        /* --- General Layout --- Time:line 141, Particles: line 160, Size: line 210 --- */ 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: white; font-family: Arial, sans-serif; overflow-x: hidden; }
 
@@ -192,12 +192,25 @@
                                 vec3 p = position;
                                 float a = rand(uv);
                                 float angle = sin(u_time * 0.6 + a * 20.0);
-                                p.x += cos(angle) * u_time * 0.06;
-                                p.y += sin(angle) * u_time * 0.06;
+
+                                // ▼ Added (lifespan)
+                                float delay = a * 0.5;
+                                float t2 = clamp(u_time - delay, 0.0, 1.0);
+                                float life = 1.0 - t2;
+
+                                // ▼ Reflect life in movement
+                                float strength = life * life;
+
+                                p.x += cos(angle) * strength * 0.06;
+                                p.y += sin(angle) * strength * 0.06;
+
                                 p.x /= u_aspect;
-                                gl_PointSize = 5.6;
+
+                                // ▼ Size also decays
+                                gl_PointSize = 5.6 * life;
                                 gl_Position = vec4(p, 1.0);
                             }
+
                         `,
                         fragmentShader: frag,
                         transparent: true,

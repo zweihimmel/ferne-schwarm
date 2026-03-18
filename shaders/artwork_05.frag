@@ -1,21 +1,23 @@
-//色々と使うことになるテンプレ。元は版画のフェードアウト用
+
 precision highp float;
 
+float rand(vec2 co){
+    return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453);
+}
 varying vec2 vUv;
 uniform sampler2D u_texture;
 uniform float u_time;
-uniform bool u_active;
+
+
+
 
 void main() {
     vec4 color = texture2D(u_texture, vUv);
     
-    if(!u_active) {
-        gl_FragColor = color;
-        return;
-    }
+    
 
-    // 進行度 (0.0 ～ 1.0)  デフォfloat t = clamp(u_time * 0.6, 0.0, 1.0);
-    float t = clamp(u_time * 0.6, 0.0, 1.0);
+    // 進行度 (0.0 ～ 1.0)  デフォfloat t = clamp(u_time * 0.6, 0.0, 1.0); 左を小さくするとゆっくり
+    float t = clamp(u_time * 0.4, 0.0, 1.0);
 
     // --- 色の抽出ロジック ---
     
@@ -39,24 +41,33 @@ void main() {
 
     if (isCoreMemory) {
         // 【茶色とライトグレー：ゆっくり消える】
-        // 0.4付近まで形を保ち、そこから静かにクリーム色に浸透していく smoothstep(0.2, 1.0, t);
-        float slowFade = smoothstep(0.2, 0.0, t);
-        
-        // 彩度を少しずつ抜きつつ、クリーム色へ vec3(0.299, 0.587, 0.114)); vec3(gray), slowFade * 0.5);
+        // 0.4付近まで形を保ち、そこから静かにクリーム色に浸透していく smoothstep(0.6, 0.9, t);
+        float slowFade = smoothstep(0.2, 1.0, t);
+
         float gray = dot(finalRGB, vec3(0.4, 0.7, 0.5));
-        finalRGB = mix(finalRGB, vec3(gray), slowFade * 0.001);
+        finalRGB = mix(finalRGB, vec3(gray), slowFade * 0.1);
         finalRGB = mix(finalRGB, cremeColor, slowFade);
-        
-        // アルファは後半まで粘る
-        alpha *= (1.0 - pow(slowFade, 2.0));
+
+        float noise = rand(vUv * 200.0 + u_time);
+        noise = smoothstep(0.2, 1.0, noise);
+
+        alpha *= (1.0 - slowFade) * noise;
+        // ▼ 最後に強制フェードを追加 デフォ pow(1.0 - t, 2.0);右を小さくするとゆっくり消える
+        alpha *= pow(1.0 - t, 0.3);
     } else {
         // 【その他の色（濃いグレー等）：素早く消える】
         // 開始とともに急速に彩度を失い、クリーム色の中に没する smoothstep(0.0, 0.5, t);
         float fastFade = smoothstep(0.2, 0.8, t);
         
         finalRGB = mix(finalRGB, cremeColor, fastFade);
-        alpha *= (1.0 - fastFade);
-    }
+    // ▼ これを追加
+        float noise = rand(vUv * 200.0 + u_time);
+        noise = smoothstep(0.2, 1.0, noise);
 
+        alpha *= (1.0 - fastFade) * noise;
+        alpha *= pow(1.0 - t, 2.0);
+    }
+    float fadeToWhite = smoothstep(0.5, 0.9, t);
+    finalRGB = mix(finalRGB, vec3(1.0), fadeToWhite);
     gl_FragColor = vec4(finalRGB, alpha);
 }
