@@ -43,58 +43,58 @@
         </div>
     </div>
 
+    <!-- スクロールヒント -->
+    <div class="scroll-hint">Scroll Down ▼</div>
+
     <script>
-        // --- イントロ制御ロジック ---
-        document.addEventListener('DOMContentLoaded', () => {
-    const intro = document.getElementById('intro-screen');
-    
-    // 1. セッションに「見たよ」という記録があるか確認
-    const hasSeenIntro = sessionStorage.getItem('visited');
-
-    if (hasSeenIntro) {
-        // 2. すでに見ている場合は、イントロ画面を即座に消す
-        if (intro) {
-            intro.style.display = 'none';
-        }
-    } else {
-        // 3. 初めて来た場合は、通常通り表示して記録を残す
-        sessionStorage.setItem('visited', 'true');
-        
-        // （既存のフェードアウト処理などがここに入る）
-        // 例: setTimeout(() => { intro.style.display = 'none'; }, 4000);
-    }
-});
-
-        // --- パネルのスクロール制御 ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DOM取得 ---
+        const intro = document.getElementById('intro-screen');
         const panel = document.querySelector('.overlay-panel');
+        const hint = document.querySelector('.scroll-hint');
 
+        // --- イントロ制御 ---
+        const hasSeenIntro = sessionStorage.getItem('visited');
+        if (hasSeenIntro && intro) {
+            intro.style.display = 'none';
+        } else {
+            sessionStorage.setItem('visited', 'true');
+            // （既存のフェードアウト処理などがここに入る）
+            // 例: setTimeout(() => { intro.style.display = 'none'; }, 4000);
+        }
+
+        // --- スクロール制御 ---
         function handleScroll() {
-            if (window.innerWidth >= 768) {
-                const scrollY = window.scrollY;
-                const windowHeight = window.innerHeight;
-                const fullHeight = document.documentElement.scrollHeight;
-                const scrollEnd = fullHeight - windowHeight;
-                const scrollStart = scrollEnd - windowHeight;
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const fullHeight = document.documentElement.scrollHeight;
+            const scrollEnd = fullHeight - windowHeight;
+            const scrollStart = scrollEnd - windowHeight;
 
-                let progress = 0;
-                if (scrollY > scrollStart) {
-                    progress = (scrollY - scrollStart) / windowHeight;
-                }
-                progress = Math.max(0, Math.min(progress, 1));
-                panel.style.transform = `translateY(${(1 - progress) * 100}%)`;
-
-                if (progress > 0.9) panel.classList.add('active');
-                else panel.classList.remove('active');
-            } else {
-                panel.style.transform = 'none';
-                panel.classList.add('active');
+            // パネル進行率
+            let progress = 0;
+            if (scrollY > scrollStart) {
+                progress = (scrollY - scrollStart) / windowHeight;
             }
+            progress = Math.max(0, Math.min(progress, 1));
+
+            // パネル移動
+            panel.style.transform = window.innerWidth >= 768 ? `translateY(${(1 - progress) * 100}%)` : 'none';
+
+            // パネルのactiveクラス
+            if (progress > 0.9) panel.classList.add('active');
+            else panel.classList.remove('active');
+
+            // スクロールヒントの表示制御 デフォ　= progress > 0.1 ? 0 : 0.7;
+            hint.style.opacity = scrollY > 10 ? 0 : 0.7; // 10pxスクロールで消える
         }
 
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('resize', handleScroll);
         window.addEventListener('load', handleScroll);
         handleScroll();
+    });
     </script>
+
 </body>
 </html>

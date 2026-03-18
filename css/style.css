@@ -61,6 +61,8 @@ body {
 
 .artwork-item img:hover { opacity: 0.7; }
 
+
+
 /* ==========================================
    4. 共通パーツ：曇りガラスパネル
    ========================================== */
@@ -69,7 +71,7 @@ body {
     background-color: rgba(255, 255, 255, 0.5); /* 少し不透明度を上げました */
     backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
     display: flex; justify-content: center; align-items: center;
-    z-index: 100;
+    z-index: 200;
 /* --- ここを追記：上に向けた薄い影 --- */
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
 }
@@ -161,4 +163,26 @@ body {
 @keyframes fadeOut { 
     from { opacity: 1; visibility: visible; } 
     to { opacity: 0; visibility: hidden; } 
+}
+
+/* ===============================
+   スクロールヒント（最小限修正版）
+   =============================== */
+.scroll-hint {
+    position: fixed;           /* 画面基準で固定 */
+    bottom: 40px;              /* 下からの距離 */
+    left: 50%;                 /* 横中央 */
+    transform: translateX(-50%);
+    z-index: 300;             /* パネルより上に表示 */
+    color: white;
+    font-size: 1rem;
+    background: rgba(0,0,0,0.3);
+    padding: 8px 16px;
+    border-radius: 30px;
+    /*backdrop-filter: blur(4px);*/
+    pointer-events: none;
+    opacity: 0.7;
+    transition: opacity 0.3s, bottom 0.3s;
+    text-align: center;
+    font-weight: bold;
 }

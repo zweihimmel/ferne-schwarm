@@ -43,44 +43,57 @@
         </div>
     </div>
 
+    <!-- scroll-hint --> 
+     <div class="scroll-hint">Scroll Down ▼</div>
+ 
     <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Get DOM elements ---
         const intro = document.getElementById('intro-screen');
-        const referrer = document.referrer;
-        const isInternalNav = referrer.includes('/ja/') || referrer.includes('/en/') || referrer.includes('/de/');
+        const panel = document.querySelector('.overlay-panel');
+        const hint = document.querySelector('.scroll-hint');
 
-        if (isInternalNav) {
+        // --- Intro control ---
+        const hasSeenIntro = sessionStorage.getItem('visited');
+        if (hasSeenIntro && intro) {
             intro.style.display = 'none';
+        } else {
+            sessionStorage.setItem('visited', 'true');
+            // (Existing fade-out logic can be placed here)
+            // Example: setTimeout(() => { intro.style.display = 'none'; }, 4000);
         }
 
-        const panel = document.querySelector('.overlay-panel');
-
+        // --- Scroll control ---
         function handleScroll() {
-            if (window.innerWidth >= 768) {
-                const scrollY = window.scrollY;
-                const windowHeight = window.innerHeight;
-                const fullHeight = document.documentElement.scrollHeight;
-                const scrollEnd = fullHeight - windowHeight;
-                const scrollStart = scrollEnd - windowHeight;
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const fullHeight = document.documentElement.scrollHeight;
+            const scrollEnd = fullHeight - windowHeight;
+            const scrollStart = scrollEnd - windowHeight;
 
-                let progress = 0;
-                if (scrollY > scrollStart) {
-                    progress = (scrollY - scrollStart) / windowHeight;
-                }
-                progress = Math.max(0, Math.min(progress, 1));
-                panel.style.transform = `translateY(${(1 - progress) * 100}%)`;
-
-                if (progress > 0.9) panel.classList.add('active');
-                else panel.classList.remove('active');
-            } else {
-                panel.style.transform = 'none';
-                panel.classList.add('active');
+            // Panel progress rate
+            let progress = 0;
+            if (scrollY > scrollStart) {
+                progress = (scrollY - scrollStart) / windowHeight;
             }
+            progress = Math.max(0, Math.min(progress, 1));
+
+            // Move the panel
+            panel.style.transform = window.innerWidth >= 768 ? `translateY(${(1 - progress) * 100}%)` : 'none';
+
+            // Toggle panel 'active' class
+            if (progress > 0.9) panel.classList.add('active');
+            else panel.classList.remove('active');
+
+            // Control scroll hint visibility
+            hint.style.opacity = scrollY > 10 ? 0 : 0.7;
         }
 
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('resize', handleScroll);
         window.addEventListener('load', handleScroll);
         handleScroll();
+    });
     </script>
 </body>
 </html>
