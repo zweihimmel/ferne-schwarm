@@ -111,15 +111,27 @@
                     const screenAspect = window.innerWidth / window.innerHeight;
                     let planeW, planeH;
 
-                    if (isMobile) {
-                        planeW = 2.0; planeH = 2.0;
-                    } else {
+                   if (isMobile) {
+                        // cover相当（CSSと一致させる）
                         if (imageAspect > screenAspect) {
-                            planeW = 2.0; planeH = 2.0 * (screenAspect / imageAspect);
+                            // 横長 → 左右カット
+                            planeW = 2.0 * (imageAspect / screenAspect);
+                            planeH = 2.0;
                         } else {
-                            planeW = 2.0 * (imageAspect / screenAspect); planeH = 2.0;
+                            // 縦長 → 上下カット
+                            planeW = 2.0;
+                            planeH = 2.0 * (screenAspect / imageAspect);
                         }
-                    }
+                    } else {
+                        // ★ここは完全に現状維持（contain）
+                        if (imageAspect > screenAspect) {
+                            planeW = 2.0; 
+                            planeH = 2.0 * (screenAspect / imageAspect);
+                        } else {
+                            planeW = 2.0 * (imageAspect / screenAspect); 
+                            planeH = 2.0;
+                        }
+}
 
                     material = new THREE.ShaderMaterial({
                         uniforms: {

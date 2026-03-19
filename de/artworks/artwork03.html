@@ -111,12 +111,24 @@
                     let planeW, planeH;
 
                     if (isMobile) {
-                        planeW = 2.0; planeH = 2.0;
-                    } else {
+                        // Emulate CSS "object-fit: cover" behavior
                         if (imageAspect > screenAspect) {
-                            planeW = 2.0; planeH = 2.0 * (screenAspect / imageAspect);
+                            // Landscape image → crop left and right
+                            planeW = 2.0 * (imageAspect / screenAspect);
+                            planeH = 2.0;
                         } else {
-                            planeW = 2.0 * (imageAspect / screenAspect); planeH = 2.0;
+                            // Portrait image → crop top and bottom
+                            planeW = 2.0;
+                            planeH = 2.0 * (screenAspect / imageAspect);
+                        }
+                    } else {
+                        // Keep existing behavior unchanged (contain)
+                        if (imageAspect > screenAspect) {
+                            planeW = 2.0; 
+                            planeH = 2.0 * (screenAspect / imageAspect);
+                        } else {
+                            planeW = 2.0 * (imageAspect / screenAspect); 
+                            planeH = 2.0;
                         }
                     }
 
